@@ -1,0 +1,65 @@
+import pandas as pd
+import torch
+import torch.nn as nn
+import torch.optim as optim
+
+# Read CSV
+df = pd.read_csv("stock.csv")
+
+# Take only the closing prices
+prices = df["Close"].values  # numpy array: [101, 103, 106, 110, 160, ...]
+
+# Training data
+# x -> guess number
+# y -> right number
+
+sequence_length = 20
+X = []
+y = []
+
+for i in range(len(prices) - sequence_length):
+    X.append(prices[i : i + sequence_length])
+    y.append(prices[i + sequence_length])
+
+# Convert to PyTorch tensors
+X_tensor = torch.tensor(X, dtype=torch.float32)
+y_tensor = torch.tensor(y, dtype=torch.float32).unsqueeze(-1)  # shape (N,1)
+
+# Neural network
+model = nn.Sequential(
+    nn.Linear(sequence_length, 32),
+    nn.ReLU(),
+    nn.Linear(32, 32),
+    nn.ReLU(),
+    nn.Linear(32, 32),
+    nn.ReLU(),
+    nn.Linear(32, 32),
+    nn.ReLU(),
+    nn.Linear(32, 1),
+)
+
+# Loss and optimizer
+criterion = nn.MSELoss()
+optimizer = optim.Adam(model.parameters(), lr=0.01)
+
+# Training
+for epoch in range(10000):
+    if (epoch + 1) % 100 == 0:
+        print(f"Epoch {epoch + 1}")
+    prediction = model(X_tensor)
+    loss = criterion(prediction, y_tensor)
+
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+
+# Test prediction
+test_number = torch.tensor([prices[-1 * sequence_length :]], dtype=torch.float32)
+predicted_next = model(test_number)
+
+print("Predicted next number:", predicted_next.item(), "Sequence:", sequence_length)
+# predicted model 1(3 hl+3 sequence) 1/10/26: 258.1941833496094
+# predicted model 2(3 hl+10 sequence) 1/10/26: 259.9517517089844
+# predicted model 3(3 hl+5 sequence) 1/10/26: 259.3763427734375
+# predicted model 4(3 hl+20 sequence) 1/10/26: 258.3569030761719
+# final value:
