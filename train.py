@@ -53,4 +53,4 @@ for epoch in range(10000):
     loss.backward()
     optimizer.step()
 
-torch.save(model, 'model.pth')
+torch.save(model, 'weights/model.pth')
