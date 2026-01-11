@@ -58,8 +58,3 @@ test_number = torch.tensor([prices[-1 * sequence_length :]], dtype=torch.float32
 predicted_next = model(test_number)
 
 print("Predicted next number:", predicted_next.item(), "Sequence:", sequence_length)
-# predicted model 1(3 hl+3 sequence) 1/10/26: 258.1941833496094
-# predicted model 2(3 hl+10 sequence) 1/10/26: 259.9517517089844
-# predicted model 3(3 hl+5 sequence) 1/10/26: 259.3763427734375
-# predicted model 4(3 hl+20 sequence) 1/10/26: 258.3569030761719
-# final value:
