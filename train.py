@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import torch
 import torch.nn as nn
@@ -8,6 +9,10 @@ df = pd.read_csv("stock.csv")
 
 # Take only the closing prices
 prices = df["Close"].values  # numpy array: [101, 103, 106, 110, 160, ...]
+
+# Create weights directory if it doesn't exist
+if not os.path.exists('weights'):
+    os.makedirs('weights')
 
 # Training data
 # x -> guess number
