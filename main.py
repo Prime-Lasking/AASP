@@ -1,5 +1,6 @@
 import torch
 import pandas as pd
+import numpy as np
 
 # Load the trained model with weights_only=False for compatibility
 model = torch.load('weights/model.pth', weights_only=False)
@@ -14,7 +15,8 @@ sequence_length = 20
 
 # Prepare the input sequence (last 'sequence_length' prices)
 last_sequence = prices[-sequence_length:]
-input_tensor = torch.tensor([last_sequence], dtype=torch.float32)
+last_sequence = np.array(last_sequence)  # Convert to numpy array
+input_tensor = torch.tensor(last_sequence, dtype=torch.float32)
 
 # Make prediction
 with torch.no_grad():
