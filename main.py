@@ -1,60 +1,24 @@
-import pandas as pd
 import torch
-import torch.nn as nn
-import torch.optim as optim
+import pandas as pd
 
-# Read CSV
+# Load the trained model with weights_only=False for compatibility
+model = torch.load('weights/model.pth', weights_only=False)
+model.eval()  # Set the model to evaluation mode
+
+# Load the stock data
 df = pd.read_csv("stock.csv")
+prices = df["Close"].values
 
-# Take only the closing prices
-prices = df["Close"].values  # numpy array: [101, 103, 106, 110, 160, ...]
-
-# Training data
-# x -> guess number
-# y -> right number
-
+# Use the same sequence length as in training
 sequence_length = 20
-X = []
-y = []
 
-for i in range(len(prices) - sequence_length):
-    X.append(prices[i : i + sequence_length])
-    y.append(prices[i + sequence_length])
+# Prepare the input sequence (last 'sequence_length' prices)
+last_sequence = prices[-sequence_length:]
+input_tensor = torch.tensor([last_sequence], dtype=torch.float32)
 
-# Convert to PyTorch tensors
-X_tensor = torch.tensor(X, dtype=torch.float32)
-y_tensor = torch.tensor(y, dtype=torch.float32).unsqueeze(-1)  # shape (N,1)
+# Make prediction
+with torch.no_grad():
+    predicted_next = model(input_tensor)
 
-# Neural network
-model = nn.Sequential(
-    nn.Linear(sequence_length, 32),
-    nn.ReLU(),
-    nn.Linear(32, 32),
-    nn.ReLU(),
-    nn.Linear(32, 32),
-    nn.ReLU(),
-    nn.Linear(32, 32),
-    nn.ReLU(),
-    nn.Linear(32, 1),
-)
-
-# Loss and optimizer
-criterion = nn.MSELoss()
-optimizer = optim.Adam(model.parameters(), lr=0.01)
-
-# Training
-for epoch in range(10000):
-    if (epoch + 1) % 100 == 0:
-        print(f"Epoch {epoch + 1}")
-    prediction = model(X_tensor)
-    loss = criterion(prediction, y_tensor)
-
-    optimizer.zero_grad()
-    loss.backward()
-    optimizer.step()
-
-# Test prediction
-test_number = torch.tensor([prices[-1 * sequence_length :]], dtype=torch.float32)
-predicted_next = model(test_number)
-
-print("Predicted next number:", predicted_next.item(), "Sequence:", sequence_length)
+print(f"Last {sequence_length} prices: {last_sequence}")
+print(f"Predicted next price: {predicted_next.item():.2f}")
