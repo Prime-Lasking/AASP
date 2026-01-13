@@ -1,9 +1,9 @@
-import torch
-import pandas as pd
 import numpy as np
+import pandas as pd
+import torch
 
 # Load the trained model with weights_only=False for compatibility
-model = torch.load('weights/model.pth', weights_only=False)
+model = torch.load("weights/model.pth", weights_only=False)
 model.eval()  # Set the model to evaluation mode
 
 # Load the stock data
