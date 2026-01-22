@@ -1,4 +1,4 @@
-# Apple Stock Predictor (AASP)
+# Apple Stock Predictor (AASP) (no longer in development)
 
 A machine learning project that predicts Apple Inc. (AAPL) stock prices using a neural network implemented in PyTorch. This project demonstrates time series forecasting for stock market data.
 
