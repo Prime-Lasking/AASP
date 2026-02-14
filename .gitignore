@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+
+# Generated data
+stock.csv
+
+# Model artifacts
+weights/
