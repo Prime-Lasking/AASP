@@ -1,14 +1,21 @@
-# Apple Stock Predictor (AASP)
+# Multi-Ticker Price Predictor (AASP)
 
-A machine learning project that predicts Apple Inc. (AAPL) stock prices using a neural network implemented in PyTorch. This project demonstrates time series forecasting for stock market data.
+A machine learning project that predicts next-step closing prices for multiple tickers using neural networks implemented in PyTorch. This project demonstrates time series forecasting for market data.
 
 ## Features
 
-- Fetches real-time Apple stock data using Yahoo Finance
-- Implements a deep neural network for price prediction
-- Uses historical price data to forecast future stock prices
+- Fetches market data using Yahoo Finance (download happens inside `train.py`)
+- Trains a separate deep neural network per ticker
+- Uses historical closing prices to forecast the next closing price
 - Configurable sequence length for time-series analysis
 - Training progress visualization
+
+## Tickers
+
+The current default tickers are:
+- `AAPL` (Apple)
+- `BTC` (Bitcoin, downloaded as `BTC-USD` via yfinance)
+- `NVDA` (NVIDIA)
 
 ## Requirements
 
@@ -16,7 +23,7 @@ A machine learning project that predicts Apple Inc. (AAPL) stock prices using a 
 - PyTorch
 - pandas
 - yfinance
-- scikit-learn (for data preprocessing)
+- numpy
 
 ## Installation
 
@@ -38,17 +45,20 @@ A machine learning project that predicts Apple Inc. (AAPL) stock prices using a 
 
 ## Usage
 
-1. First, fetch the latest stock data:
+1. Train the models (this step also downloads the latest data and saves `stock.csv` locally):
    ```bash
-   python stock.py
+   python train.py
    ```
-   This will download the latest Apple stock data and save it as `stock.csv`.
+   Optional quick test run:
+   ```bash
+   QUICK_TRAIN=1 python train.py
+   ```
 
-2. Run the prediction model:
+2. Run predictions:
    ```bash
    python main.py
    ```
-   The script will train the neural network and output the predicted next closing price.
+   The script loads each trained model from `weights/` and prints the current and predicted next price.
 
 ## Model Architecture
 
@@ -62,7 +72,7 @@ The neural network consists of:
 The model is trained using:
 - Mean Squared Error (MSE) loss function
 - Adam optimizer with a learning rate of 0.01
-- 10,000 training epochs
+- 5,000 training epochs (default)
 - Sequence length of 20 days for time-series analysis
 
 ## Results
@@ -71,9 +81,10 @@ The model outputs the predicted next day's closing price based on the most recen
 
 ## Files
 
-- `main.py`: Main script containing the neural network implementation and training loop
-- `stock.py`: Script to fetch stock data using yfinance
-- `stock.csv`: CSV file containing historical stock data
+- `train.py`: Downloads data (yfinance), prepares training sequences, trains models, and saves weights to `weights/`
+- `main.py`: Loads trained models and prints next-step predictions per ticker
+- `stock.csv`: Generated dataset used for training (gitignored)
+- `weights/`: Generated trained models (gitignored)
 - `README.md`: This file
 
 ## Note on Predictions
