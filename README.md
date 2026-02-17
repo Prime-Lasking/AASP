@@ -1,4 +1,4 @@
-# Multi-Ticker Price Predictor (AASP)
+# Multi-Ticker Price Predictor (MTPP)
 
 A machine learning project that predicts next-step closing prices for multiple tickers using neural networks implemented in PyTorch. This project demonstrates time series forecasting for market data.
 
@@ -29,7 +29,7 @@ The current default tickers are:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/Prime-Lasking/AASP.git
+   git clone https://github.com/Prime-Lasking/MTPP.git
    cd AASP
    ```
 
